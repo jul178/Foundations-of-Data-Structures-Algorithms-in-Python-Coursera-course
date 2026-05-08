@@ -1,0 +1,175 @@
+l = [10, 25, 20, 50, 45, 15, 40]
+
+# Bubble sort
+def bubble_sort(l):
+    n = len(l)
+    for i in range(n):
+        for j in range(n - i - 1):
+            if l[j] > l[j + 1]:
+                l[j], l[j + 1] = l[j + 1], l[j]
+    return l
+# O(N)
+print(bubble_sort(l))
+
+
+# Selection sort
+def seltction_sort(l):
+    n = len(l)
+    for i in range(n):
+        smallIndex = i
+        for j in range(i, n):
+            if l[j] < l[smallIndex]:
+                smallIndex = j
+
+        l[i], l[smallIndex] = l[smallIndex], l[i]
+    return l
+# O(N^2)
+print(seltction_sort(l))
+
+
+# Insertion sort
+def insetrion_sort(l):
+    for i in range(1, len(l)):
+        j = i - 1
+        key = l[i]
+        while j >= 0 and l[j] > key:
+            l[j + 1] = l[j]
+            j -= 1
+        l[j + 1] = key
+    return l
+# worst case: O(N^2)
+# best case: O(N)
+print(insetrion_sort(l))
+
+
+# Merge two sorted arrays
+a = [5, 7, 9, 13, 20, 25, 32]
+b = [8, 11, 11, 15]
+
+def merge_two_arr(a, b):
+    n = len(a)
+    m = len(b)
+    c = [0] * (n + m)
+    i = 0
+    j = 0
+    k = 0
+    while i < n or j < m:
+        if i < n and j < m:
+            if a[i] <= b[j]:
+                c[k] = a[i]
+                i += 1
+            else:
+                c[k] = b[j]
+                j += 1
+            k += 1
+        elif i < n:
+            c[k] = a[i]
+            i += 1
+            k += 1
+        elif j < m: # else
+            c[k] = b[i]
+            j += 1
+            k += 1
+    return c
+# O(N + M) - linear
+print(merge_two_arr(a, b))
+
+
+# Merge sort
+a = [7, 9, 3, 4, 1, 5, 10, 15, 12, 9, 18, 23, 14]
+def merge_sort(left, right):
+    if left < right:
+        mid = (left + right)//2
+        merge_sort(left, mid)
+        merge_sort(mid + 1, right)
+        merge(left, mid, right)
+
+def merge(start, mid, end):
+    # c = a[start: mid + 1] + a[mid: end + 1]
+    i = start
+    j = mid + 1
+    k = 0
+    c = [0]* (end - start + 1)
+    while i <= mid or j <= end:
+        if i <= mid and j <= end:
+            if a[i] <= a[j]:
+                c[k] = a[i]
+                i += 1
+            else:
+                c[k] = a[j]
+                j += 1
+        elif i <= mid:
+            c[k] = a[i]
+            i += 1
+        else:
+            c[k] = a[j]
+            j += 1
+        k += 1
+
+    for i in range(len(c)):
+        a[start + i] = c[i]
+# Time Compexity - O(NlogN)   Space Compexity - O(N)
+merge_sort(0, len(a) -1)
+print(a)
+
+
+# Partitioning algorithm
+def partitioning_algorithm(l):
+    n = len(l)
+    key = l[n - 1]
+    left = -1
+    for i in range(n - 1):
+        if a[i] <= key:
+            left += 1
+            a[i], a[left] = a[left], a[i]
+    left += 1
+    a[n - 1], a[left] = a[left], a[n -1]
+    return l
+# O(N)
+print(partitioning_algorithm(l))
+
+# Quick sort
+def quick_sort(left, right):
+    if left < right:
+        partition_point = partition(left, right)
+        quick_sort(left, partition_point -1)
+        quick_sort(partition_point + 1, right)
+
+def partition(start, end):
+    left = start - 1
+    pivot = a[end]
+    for i in range(start, end):
+        if a[i] <= pivot:
+            left += 1
+            a[left], a[i] = a[i], a[left]
+    left += 1
+    a[end], a[left] = a[left], a[end]
+    return left
+# Best case: TC - O(NlogN). SC - O(logN)
+# Worst case: TC - O(N^2). SC - O(N)
+quick_sort(0, len(a) - 1)
+print(a)
+
+
+def counting_sort(l):
+    max_el = max(l)
+    freq = [0] * (max_el + 1)
+    for num in l: # TC = O(N)
+        freq[num] += 1
+
+    for i in range(1, len(freq)): # TC = O(M)
+        freq[i] = freq[i - 1] + freq[i]
+    # SC = O(N)
+    temp = [0] * len(l) # SC = O(N)
+
+    for i in range(len(l) - 1, -1, -1): # TC = O(N)
+        curr = l[i]
+        cnt = freq[curr]
+        temp[cnt - 1] = l[i]
+        freq[l[i]] -= 1
+
+    for i in range(len(temp)): # TC = O(M)
+        l[i] = temp[i]
+# TC = SC = O(N+M)
+counting_sort(l)
+print(l)
